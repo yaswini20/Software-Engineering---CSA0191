@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+  title: Personalized Greetings API
+  description: |
+    A sample API for managing and sending personalized greetings.
+    This specification is based on the OpenAPI 3.0 standard.
+  version: 1.0.0
+servers:
+  - url: https://greetings.example.com/api/v1
+tags:
+  - name: greeting
+    description: Operations related to greetings
+  - name: user
+    description: Manage users for personalized greetings
+paths:
+  /greetings:
+    get:
+      tags:
+        - greeting
+      summary: List all greetings
+      description: Retrieve a list of available greetings.
+      responses:
+        '200':
+          description: A list of greetings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Greeting'
+    post:
+      tags:
+        - greeting
+      summary: Create a new greeting
+      description: Add a new greeting to the store.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Greeting'
+        required: true
+      responses:
+        '201':
+          description: Greeting created successfully
+  /greetings/{greetingId}:
+    get:
+      tags:
+        - greeting
+      summary: Get a greeting by ID
+      description: Retrieve details of a specific greeting.
+      parameters:
+        - name: greetingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Greeting details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Greeting'
+        '404':
+          description: Greeting not found
+    put:
+      tags:
+        - greeting
+      summary: Update a greeting
+      description: Update the details of an existing greeting.
+      parameters:
+        - name: greetingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Greeting'
+        required: true
+      responses:
+        '200':
+          description: Greeting updated successfully
+    delete:
+      tags:
+        - greeting
+      summary: Delete a greeting
+      description: Delete a greeting by its ID.
+      parameters:
+        - name: greetingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Greeting deleted successfully
+  /users/{userId}/greetings:
+    get:
+      tags:
+        - user
+      summary: Get personalized greetings for a user
+      description: Retrieve a list of personalized greetings for a specific user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Personalized greetings for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonalizedGreeting'
+components:
+  schemas:
+    Greeting:
+      type: object
+      required:
+        - message
+      properties:
+        id:
+          type: integer
+          example: 1
+        message:
+          type: string
+          example: "Happy Birthday!"
+        category:
+          type: string
+          example: "Birthday"
+    PersonalizedGreeting:
+      type: object
+      required:
+        - userId
+        - greetingId
+      properties:
+        userId:
+          type: integer
+          example: 101
+        greetingId:
+          type: integer
+          example: 1
+        personalizedMessage:
+          type: string
+          example: "Happy Birthday, John! Wishing you all the best!"
